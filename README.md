@@ -1,4 +1,4 @@
-# Configuration file loader and monitor for Node.js
+# Configuration file loader and monitor for Node.js [![Build Status](https://secure.travis-ci.org/MathieuTurcotte/node-config.png?branch=master)](http://travis-ci.org/MathieuTurcotte/node-config)
 
 Load and monitor a configuration file.
 
