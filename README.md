@@ -16,13 +16,6 @@ Suppose the following configuration file.
 {
     "widget": {
         "debug": "on",
-        "image": {
-            "alignment": "center",
-            "hOffset": 250,
-            "name": "sun1",
-            "src": "Images/Sun.png",
-            "vOffset": 250
-        },
         "window": {
             "height": 500,
             "name": "main_window",
@@ -55,7 +48,9 @@ config.on('update', function() {
 
 ## API
 
-### dconf.load(filename, callback)
+### Package dconf
+
+#### dconf.load(filename, callback)
 
 - filename: configuration file path
 - callback: continuation callback
@@ -67,7 +62,7 @@ will be null and err will contain an error object.
 
 Returns a `Config` instance (see bellow).
 
-### dconf.loadSync(filename)
+#### dconf.loadSync(filename)
 
 - filename: configuration file path
 
@@ -89,7 +84,9 @@ The `Config` class isn't intended to be instantiated directly by clients. Use
 
 Return a string representing the currently loaded configuration.
 
-#### config.
+#### config.close()
+
+Stop monitoring the underlying config file and remove all listeners.
 
 #### Event: 'update'
 
