@@ -181,5 +181,19 @@ exports["Config"] = testCase({
         test.equals(listener.callCount, 0);
         test.done();
     },
+
+    "closing the config should stop any scheduled reload": function(test) {
+        var config = new Config(null, this.watcher, {});
+        var readFile = sinon.spy();
+        this.fs.replace('readFile', readFile);
+
+        this.watcher.emit('change');
+        config.close();
+
+        this.clock.tick(config.RELOAD_DELAY);
+
+        test.ok(!readFile.called);
+        test.done();
+    }
 });
 
