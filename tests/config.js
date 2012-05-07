@@ -12,6 +12,9 @@ var testCase = require('nodeunit').testCase,
 
 var Config = require('../lib/config');
 
+var PREV_STAT = { mtime: new Date(1336409838227) };
+var CURR_STAT = { mtime: new Date(1336409838228) };
+
 exports["Config"] = testCase({
     setUp: function(callback) {
         this.filename = "filename.txt";
@@ -86,10 +89,22 @@ exports["Config"] = testCase({
         var config = new Config(null, this.watcher, {});
         this.fs.replace('readFile', readFile);
 
-        this.watcher.emit('change');
+        this.watcher.emit('change', CURR_STAT, PREV_STAT);
         this.clock.tick(config.RELOAD_DELAY);
 
         test.equals(config.get('a.b.c'), 'ok');
+        test.done();
+    },
+
+    "file change with same mtime should be ignored": function(test) {
+        var config = new Config(null, this.watcher, {});
+        var readFile = sinon.spy();
+        this.fs.replace('readFile', readFile);
+
+        this.watcher.emit('change', CURR_STAT, CURR_STAT);
+        this.clock.tick(config.RELOAD_DELAY);
+
+        test.equals(readFile.callCount, 0);
         test.done();
     },
 
@@ -102,13 +117,13 @@ exports["Config"] = testCase({
         var updateSpy = sinon.spy();
         config.on('update', updateSpy);
 
-        this.watcher.emit('change');
+        this.watcher.emit('change', CURR_STAT, PREV_STAT);
         this.clock.tick(config.RELOAD_DELAY / 2);
 
-        this.watcher.emit('change');
+        this.watcher.emit('change', CURR_STAT, PREV_STAT);
         this.clock.tick(config.RELOAD_DELAY / 2);
 
-        this.watcher.emit('change');
+        this.watcher.emit('change', CURR_STAT, PREV_STAT);
         this.clock.tick(config.RELOAD_DELAY);
 
         test.ok(updateSpy.calledOnce);
@@ -124,7 +139,7 @@ exports["Config"] = testCase({
         var errorSpy = sinon.spy();
         config.on('error', errorSpy);
 
-        this.watcher.emit('change');
+        this.watcher.emit('change', CURR_STAT, PREV_STAT);
         this.clock.tick(config.RELOAD_DELAY);
 
         test.ok(errorSpy.calledOnce);
@@ -140,7 +155,7 @@ exports["Config"] = testCase({
         var errorSpy = sinon.spy();
         config.on('error', errorSpy);
 
-        this.watcher.emit('change');
+        this.watcher.emit('change', CURR_STAT, PREV_STAT);
         this.clock.tick(config.RELOAD_DELAY);
 
         test.ok(errorSpy.calledOnce);
@@ -187,7 +202,7 @@ exports["Config"] = testCase({
         var readFile = sinon.spy();
         this.fs.replace('readFile', readFile);
 
-        this.watcher.emit('change');
+        this.watcher.emit('change', CURR_STAT, PREV_STAT);
         config.close();
 
         this.clock.tick(config.RELOAD_DELAY);
