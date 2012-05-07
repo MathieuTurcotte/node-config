@@ -8,6 +8,12 @@ Load and monitor a configuration file.
 npm install dconf
 ```
 
+## Tests
+
+```
+npm test
+```
+
 ## Example
 
 Suppose the following configuration file.
